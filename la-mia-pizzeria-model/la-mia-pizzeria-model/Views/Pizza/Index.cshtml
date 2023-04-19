@@ -1,0 +1,76 @@
+﻿
+@model Pizza[]
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    var pizze = @Model;
+}
+
+<header class="text-center">
+    <h1>La mia pizzeria</h1>
+</header>
+
+@if(pizze.Length is 0)
+{
+    <div class="text-center">
+        <h3>Nessuna pizza!</h3>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="btn btn-primary" href="@Url.Action("Create", "Pizza")">Crea</a>    
+        }
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Immagine</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Descrizione</th>
+              <th scope="col">Prezzo</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th scope="col">Azioni</th>
+                }
+            </tr>
+          </thead>
+          <tbody>
+                @foreach(var pizza in pizze)
+                {
+                    <tr>
+                      <th scope="row">@pizza.Id</th>
+                      <th> <img src="@pizza.ImgSrc"/> </th>
+                      <td>
+                          <a href="@Url.Action("Detail", "Pizza", new { Id = pizza.Id })"> @pizza.Name </a>
+                      </td>
+                      <td>@pizza.Description</td>
+                      <td>@pizza.Price</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                          <td>
+                              <a class="btn btn-secondary my-2" href="@Url.Action("Update", "Pizza", new { Id = pizza.Id })"> Edit </a>
+                              <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.Id" method="post">
+                                  @Html.AntiForgeryToken()
+                                  <button class="btn btn-danger"> Delete </button>
+                              </form>
+                          </td>
+                        }
+                    </tr> 
+                }
+          </tbody>
+        </table>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="text-center">
+                <a class="btn btn-primary" href="@Url.Action("Create", "Pizza")">Crea</a>
+            </div>
+        }
+
+    </div>
+}
+
