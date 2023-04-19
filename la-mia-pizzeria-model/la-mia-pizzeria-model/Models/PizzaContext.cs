@@ -10,6 +10,17 @@ namespace la_mia_pizzeria_model.Models
         public DbSet<Category> Categories { get; set; }
 		public DbSet<Ingredient> Ingredients { get; set; }
 
+        public PizzaContext()
+        {
+
+        }
+
+        public PizzaContext(DbContextOptions<PizzaContext> options)
+        : base(options)
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=PizzaDb;Integrated Security=True;Pooling=False;TrustServerCertificate = True");
