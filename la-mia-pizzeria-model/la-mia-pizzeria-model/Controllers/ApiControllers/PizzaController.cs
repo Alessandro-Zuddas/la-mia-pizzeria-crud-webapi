@@ -21,15 +21,62 @@ namespace la_mia_pizzeria_model.Controllers.ApiControllers
         public IActionResult GetPizzas([FromQuery] string? name)
         {
             var pizzas = _context.Pizzas
-            .Include(p => p.Category)
-            .Include(p => p.Ingredients)
-            .Where(p => name == null || p.Name.ToLower().Contains(name.ToLower()))
-            .ToList();
+                //.Include(p => p.Category)
+                //.Include(p => p.Ingredients)
+                .Where(p => name == null || p.Name.ToLower().Contains(name.ToLower()))
+                .ToList();
 
             return Ok(pizzas);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
+        public IActionResult GetPizza(int id)
+        {
+            var pizza = _context.Pizzas.FirstOrDefault(p => p.Id == id);
 
+            if (pizza == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pizza);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult PutPizza(int id, [FromBody] Pizza pizza)
+        {
+            var savedPizza = _context.Pizzas.FirstOrDefault(p => p.Id == id);
+
+            if (savedPizza is null)
+            {
+                return NotFound();
+            }
+
+            savedPizza.Name = pizza.Name;
+            savedPizza.Description = pizza.Description;
+            savedPizza.Price = pizza.Price;
+            savedPizza.ImgSrc = pizza.ImgSrc;
+            savedPizza.CategoryId = pizza.CategoryId;
+
+            _context.SaveChanges();
+
+            return Ok(savedPizza);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletePizza(int id)
+        {
+            var savedPizza = _context.Pizzas.FirstOrDefault(p => p.Id == id);
+
+            if (savedPizza == null)
+            {
+                return NotFound();
+            }
+
+            _context.Pizzas.Remove(savedPizza);
+            _context.SaveChanges();
+
+            return Ok();
+        }
     }
 }
