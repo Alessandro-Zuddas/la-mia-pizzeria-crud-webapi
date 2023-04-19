@@ -42,6 +42,15 @@ namespace la_mia_pizzeria_model.Controllers.ApiControllers
             return Ok(pizza);
         }
 
+        [HttpPost]
+        public IActionResult CreatePizza(Pizza pizza)
+        {
+            _context.Pizzas.Add(pizza);
+            _context.SaveChanges();
+
+            return Ok(pizza);
+        }
+
         [HttpPut("{id}")]
         public IActionResult PutPizza(int id, [FromBody] Pizza pizza)
         {
